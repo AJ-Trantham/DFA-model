@@ -6,10 +6,16 @@ import fa.State;
 import java.util.Set;
 
 public class DFA implements DFAInterface, FAInterface {
+    //TODO: need a member variable pointingn to the start state
+    // TODO: need set of final states - member variable as accessed by accepts
+
+    // TODO:  and Set of States - remember states will each hold there own transition table so the DFA does not need a transtion table only the states do
 
 
     @Override
     public boolean accepts(String s) {
+
+        // need current state pointer to walk through string
         return false;
     }
 
