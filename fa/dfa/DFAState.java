@@ -5,10 +5,11 @@ import fa.TransitionMap;
 
 public class DFAState extends State {
 
-        // should have a transition table which will map its transition on its possible inputs
+    // should have a transition table which will map its transition on its possible inputs
     private TransitionMap table; //table used to store transitions
 
-    public DFAState(){
+    public DFAState(String name) {
+        this.name = name;
         table = new TransitionMap();
     }
 
@@ -19,5 +20,9 @@ public class DFAState extends State {
      */
     public State transition(String symbol){
         return table.getTran(symbol);
+    }
+
+    public void addTransition(String symbol, State destState) {
+        table.addTran(symbol,destState);
     }
 }

@@ -1,30 +1,28 @@
 package fa;
 
+import fa.dfa.DFAState;
 import java.util.HashMap;
 
+// wrapper for HashMap, TransitionMap will be held by State Objects and the TransitionMap will hold transitions to other states
 public class TransitionMap {
 
-    // wrapper for HashMap and will hold the Transitions
-    private HashMap<String,State> transitionTable; // used string since it since HasMap requires an Object
+    private HashMap<String,State> transitionTable; // used string since it since HasHMap requires an Object - on String map to Next State State
 
     public TransitionMap() {
-
-        transitionTable = new HashMap();
-
+        transitionTable = new HashMap<String,State>();
     }
 
     /**
      * Adds a transition from the current state to a new one
      * @param key - the symbol we are transitioning with
-     * @param value - the new state
+     * @param destState - the new state
      */
-    public void addTran(String key, String value){
+    public void addTran(String key, State destState){
         //we can add an array or something instead of just 1 value when we do a dfa
-
-        if(transitionTable.putIfAbsent(key, value) == null) { //adds the value and key to the hash table. null if they do not already exist
-            System.out.println("Transition [" + key + ", " + value + "] added");
+        if(transitionTable.putIfAbsent(key, destState) == null) { //adds the value and key to the hash table. null if they do not already exist
+            System.out.println("Transition [" + key + ", " + destState.getName() + "] added");
         } else {
-            System.out.println("Transition [" + key + ", " + value + "] already exists.");
+            System.out.println("Transition [" + key + ", " + destState.getName() + "] already exists.");
             System.out.println("Check if we actually have a DFA.");
         }
     }

@@ -25,3 +25,5 @@ hs_err_pid*
 # inteliji files
 .idea/
 *.iml
+
+out/
