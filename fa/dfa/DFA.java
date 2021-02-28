@@ -9,14 +9,14 @@ import java.util.Set;
 
 public class DFA implements DFAInterface, FAInterface {
     private HashSet<DFAState> finalStates;
-    private HashSet<DFAState> states; // hold each state that is not a start or final state in the DFA
+    private HashSet<DFAState> states; // hold each state including start or final state in the DFA
     private DFAState startState;      // there should only be a single start state
-    private HashSet<String> language;
+    private HashSet<Character> symbols;
 
     public DFA() {
         finalStates = new HashSet<DFAState>();
         states = new HashSet<DFAState>();
-        language = new HashSet<String>();
+        symbols = new HashSet<Character>();
         startState = null;
     }
 
@@ -24,10 +24,26 @@ public class DFA implements DFAInterface, FAInterface {
     @Override
     public boolean accepts(String s) {
 
-        // need current state pointer to walk through string
-        return false;
-    }
+        int spoint = 0; //index pointer on s
+        DFAState statePoint = startState;//current state pointer
+        int slength = s.length; //length of s
 
+        while(slength != spoint){
+            char symb = s.charAt(spoint); //get symbol at the s pointer
+            statePoint = statePoint.transition(symb);
+            if(statePoint == null){
+                return false;
+            }
+            spoint++;
+        }
+        statePoint = statePoint.transition((char) s.substring(spoint));
+        if (statePoint == null || !statePoint.isFinalState()){
+            return false;
+        }else {
+            return true;
+        }
+    }
+//TODO: this thing
     @Override
     public State getToState(DFAState from, char onSymb) {
         return null;
@@ -35,7 +51,7 @@ public class DFA implements DFAInterface, FAInterface {
 
     @Override
     public void addStartState(String name) {
-        startState = new DFAStartState(name);
+        startState = new DFAState(name);
         this.states.add(startState);
     }
 
@@ -47,7 +63,7 @@ public class DFA implements DFAInterface, FAInterface {
 
     @Override
     public void addFinalState(String name) {
-        DFAState newFinalState = new DFAFinalState(name);
+        DFAState newFinalState = new DFAState(name);
         this.states.add(newFinalState);
         this.finalStates.add(newFinalState);
     }
@@ -56,11 +72,11 @@ public class DFA implements DFAInterface, FAInterface {
     public void addTransition(String fromState, char onSymb, String toState) {
         DFAState originState = this.getStateByName(fromState);
         DFAState destState = this.getStateByName(toState);
-        String symb = String.valueOf(onSymb);
-        originState.addTransition(symb, destState);
 
-        // update language if new Symb is seen, don't need to check if sym is in the language as HashSet only adds if it isn't in the set
-        language.add(symb);
+        originState.addTransition(onSymb, destState);
+
+        // update symbols if new Symb is seen, don't need to check if sym is in the language as HashSet only adds if it isn't in the set
+        symbols.add(onSymb);
 
     }
 
@@ -81,7 +97,7 @@ public class DFA implements DFAInterface, FAInterface {
 
     @Override
     public Set<Character> getABC() {
-        return null;
+        return symbols;
     }
 
     private DFAState getStateByName(String name) {
@@ -111,9 +127,9 @@ public class DFA implements DFAInterface, FAInterface {
         }
         dfaStr.append("Q = {" + states + "}");
 
-        // add languages
+        // add symbols
         StringBuilder lang = new StringBuilder();
-        Iterator<String> langIterator = this.language.iterator();
+        Iterator<Character> langIterator = this.symbols.iterator();
         while (langIterator.hasNext()) {
             lang.append(langIterator.next().toString() + " ");
         }
