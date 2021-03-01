@@ -3,20 +3,20 @@ package fa.dfa;
 import fa.FAInterface;
 import fa.State;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 public class DFA implements DFAInterface, FAInterface {
-    private HashSet<DFAState> finalStates;
-    private HashSet<DFAState> states; // hold each state including start or final state in the DFA
+    private LinkedHashSet<DFAState> finalStates;
+    private LinkedHashSet<DFAState> states; // hold each state including start or final state in the DFA
     private DFAState startState;      // there should only be a single start state
-    private HashSet<Character> symbols;
+    private LinkedHashSet<Character> symbols;
 
     public DFA() {
-        finalStates = new HashSet<DFAState>();
-        states = new HashSet<DFAState>();
-        symbols = new HashSet<Character>();
+        finalStates = new LinkedHashSet<DFAState>();
+        states = new LinkedHashSet<DFAState>();
+        symbols = new LinkedHashSet<Character>();
         startState = null;
     }
 
@@ -29,18 +29,22 @@ public class DFA implements DFAInterface, FAInterface {
         int slength = s.length(); //length of s
 
         while(slength != spoint){
-            char symb = s.charAt(spoint); //get symbol at the s pointer
+    //        System.out.println(s);
+		char symb = s.charAt(spoint); //get symbol at the s pointer
             statePoint = statePoint.transition(symb);
             if(statePoint == null){
-                return false;
+    //            System.out.println("Outputting false 1");
+		return false;
             }
             spoint++;
         }
 //        statePoint = statePoint.transition((char) s.substring(spoint));
         if (!statePoint.isFinalState()){
-            return false;
+//                System.out.println("Outputting false 2");
+		return false;
         }else {
-            return true;
+  //          	System.out.println("Outputting true");
+		return true;
         }
     }
 //TODO: this thing
@@ -51,20 +55,25 @@ public class DFA implements DFAInterface, FAInterface {
 
     @Override
     public void addStartState(String name) {
-        startState = new DFAState(name);
-        this.states.add(startState);
+        //System.out.println("New start state" + name);
+	    startState = new DFAState(name);
+        startState.setStartState(true);
+	this.states.add(startState);
     }
 
     @Override
     public void addState(String name) {
-        DFAState newState = new DFAState(name);
+//        System.out.println("New Regular state" + name);
+	    DFAState newState = new DFAState(name);
         this.states.add(newState);
     }
 
     @Override
     public void addFinalState(String name) {
-        DFAState newFinalState = new DFAState(name);
-        this.states.add(newFinalState);
+//        System.out.println("New final state" + name);
+	    DFAState newFinalState = new DFAState(name);
+        newFinalState.setFinalState(true);
+	this.states.add(newFinalState);
         this.finalStates.add(newFinalState);
     }
 
@@ -123,7 +132,8 @@ public class DFA implements DFAInterface, FAInterface {
         states.append(" ");
         Iterator<DFAState> stateIterator = this.states.iterator();
         while (stateIterator.hasNext()) {
-            states.append(stateIterator.next().getName() + " ");
+//        	System.out.println("States: " + states);
+	   	    states.append(stateIterator.next().getName() + " ");
         }
         dfaStr.append("Q = {" + states + "}");
 
@@ -131,7 +141,8 @@ public class DFA implements DFAInterface, FAInterface {
         StringBuilder lang = new StringBuilder();
         Iterator<Character> langIterator = this.symbols.iterator();
         while (langIterator.hasNext()) {
-            lang.append(langIterator.next().toString() + " ");
+//          System.out.println("Lang: " + lang.toString());
+		    lang.append(langIterator.next().toString() + " ");
         }
         dfaStr.append("\nSigma = { " + lang + "}\n");
 
