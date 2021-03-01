@@ -28,7 +28,7 @@ public class DFAState extends State {
         return table.getTran(symbol);
     }
 
-    public void addTransition(char symbol, State destState) {
+    public void addTransition(char symbol, DFAState destState) {
         table.addTran(symbol,destState);
     }
 

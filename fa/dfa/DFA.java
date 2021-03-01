@@ -26,7 +26,7 @@ public class DFA implements DFAInterface, FAInterface {
 
         int spoint = 0; //index pointer on s
         DFAState statePoint = startState;//current state pointer
-        int slength = s.length; //length of s
+        int slength = s.length(); //length of s
 
         while(slength != spoint){
             char symb = s.charAt(spoint); //get symbol at the s pointer
@@ -36,8 +36,8 @@ public class DFA implements DFAInterface, FAInterface {
             }
             spoint++;
         }
-        statePoint = statePoint.transition((char) s.substring(spoint));
-        if (statePoint == null || !statePoint.isFinalState()){
+//        statePoint = statePoint.transition((char) s.substring(spoint));
+        if (!statePoint.isFinalState()){
             return false;
         }else {
             return true;

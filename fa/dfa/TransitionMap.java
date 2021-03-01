@@ -7,10 +7,10 @@ import java.util.HashMap;
 // wrapper for HashMap, TransitionMap will be held by State Objects and the TransitionMap will hold transitions to other states
 public class TransitionMap {
 
-    private HashMap<String, DFAState> transitionTable; // used string since HasHMap requires an Object - on String map to Next State State
+    private HashMap<Character, DFAState> transitionTable; // used string since HasHMap requires an Object - on String map to Next State State
 
     public TransitionMap() {
-        transitionTable = new HashMap<String,DFAState>();
+        transitionTable = new HashMap<Character,DFAState>();
     }
 
     /**
@@ -20,7 +20,7 @@ public class TransitionMap {
      */
     public void addTran(char key, DFAState destState){
         //we can add an array or something instead of just 1 value when we do a dfa
-        if(transitionTable.putIfAbsent((String) key, destState) == null) { //adds the value and key to the hash table. null if they do not already exist
+        if(transitionTable.putIfAbsent(key, destState) == null) { //adds the value and key to the hash table. null if they do not already exist
             System.out.println("Transition [" + key + ", " + destState.getName() + "] added");
         } else {
             System.out.println("Transition [" + key + ", " + destState.getName() + "] already exists.");
