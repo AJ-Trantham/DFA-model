@@ -4,7 +4,10 @@ import fa.State;
 import fa.dfa.DFAState;
 import java.util.HashMap;
 
-// wrapper for HashMap, TransitionMap will be held by State Objects and the TransitionMap will hold transitions to other states
+/** Wrapper for HashMap, TransitionMap will be held by State Objects and the TransitionMap will hold transitions to other states
+ * @author Jost Leavell
+ * @author AJ Trantham
+ */
 public class TransitionMap {
 
     private HashMap<Character, DFAState> transitionTable; // used string since HasHMap requires an Object - on String map to Next State State

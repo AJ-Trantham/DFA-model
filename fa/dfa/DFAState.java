@@ -5,6 +5,13 @@ import fa.dfa.TransitionMap;
 
 import java.util.HashMap;
 
+
+/**
+ *  Represents a DFA state with all the state information: stat, final, and transition info
+ *
+ * @author Jost Leavell
+ * @author AJ Trantham
+ */
 public class DFAState extends State {
 
     // should have a transition table which will map its transition on its possible inputs
@@ -57,39 +64,5 @@ public class DFAState extends State {
     public boolean isFinalState(){
         return finalState;
     }
-
-//    private class TransitionMap {
-//
-//        private HashMap<String, State> transitionTable; // used string since HasHMap requires an Object - on String map to Next State State
-//
-//        public TransitionMap() {
-//            transitionTable = new HashMap<String,State>();
-//        }
-//
-//        /**
-//         * Adds a transition from the current state to a new one
-//         * @param key - the symbol we are transitioning with
-//         * @param destState - the new state
-//         */
-//        public void addTran(char key, State destState){
-//            //we can add an array or something instead of just 1 value when we do a dfa
-//            if(transitionTable.putIfAbsent((String) key, destState) == null) { //adds the value and key to the hash table. null if they do not already exist
-//                System.out.println("Transition [" + key + ", " + destState.getName() + "] added");
-//            } else {
-//                System.out.println("Transition [" + key + ", " + destState.getName() + "] already exists.");
-//                System.out.println("Check if we actually have a DFA.");
-//            }
-//        }
-//
-//        /**
-//         * Finds the transition associated with a symbol, and returns the new state
-//         * @param key - transition symbol
-//         * @return - new state, or null if the transition has not been added
-//         */
-//        public State getTran(String key){
-//            return transitionTable.get(key);//retrieves state from hashtable and returns it
-//        }
-//
-//    }
 
 }

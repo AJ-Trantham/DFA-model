@@ -7,6 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ *  Represents a Detirministic Finate Automata
+ * @author Jost Leavell
+ * @author AJ Trantham
+ */
 public class DFA implements DFAInterface, FAInterface {
     private LinkedHashSet<DFAState> finalStates;
     private LinkedHashSet<DFAState> states; // hold each state including start or final state in the DFA
