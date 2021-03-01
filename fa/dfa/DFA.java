@@ -133,7 +133,40 @@ public class DFA implements DFAInterface, FAInterface {
         while (langIterator.hasNext()) {
             lang.append(langIterator.next().toString() + " ");
         }
-        dfaStr.append("\nSigma = { " + lang + "}");
+        dfaStr.append("\nSigma = { " + lang + "}\n");
+
+        //transition table delta
+        langIterator = this.symbols.iterator();
+        stateIterator = this.states.iterator();
+        dfaStr.append("delta = \n");
+        dfaStr.append("\t\t");
+        while (langIterator.hasNext()) {
+            dfaStr.append(langIterator.next().toString() + "\t");
+        }
+        dfaStr.append("\n");
+        while(stateIterator.hasNext()) {
+            langIterator = this.symbols.iterator();
+            DFAState currState = stateIterator.next();
+            dfaStr.append("\t" + currState.getName() + "\t");
+            // transition on each symbol
+            while(langIterator.hasNext()) {
+                char symb = langIterator.next();
+                DFAState transState = currState.transition(symb);
+                dfaStr.append(transState.getName() + "\t");
+            }
+            dfaStr.append("\n");
+        }
+
+        // start state
+        dfaStr.append("q0 = " + startState.getName());
+
+        // final states
+        Iterator<DFAState> finalStatesIterator = this.finalStates.iterator();
+        dfaStr.append("\nF = { ");
+        while (finalStatesIterator.hasNext()) {
+             dfaStr.append(finalStatesIterator.next() + " ");
+        }
+        dfaStr.append("}");
 
 
         return dfaStr.toString();
