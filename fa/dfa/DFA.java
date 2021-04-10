@@ -3,20 +3,25 @@ package fa.dfa;
 import fa.FAInterface;
 import fa.State;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ *  Represents a Detirministic Finate Automata
+ * @author Jost Leavell
+ * @author AJ Trantham
+ */
 public class DFA implements DFAInterface, FAInterface {
-    private HashSet<DFAState> finalStates;
-    private HashSet<DFAState> states; // hold each state that is not a start or final state in the DFA
+    private LinkedHashSet<DFAState> finalStates;
+    private LinkedHashSet<DFAState> states; // hold each state including start or final state in the DFA
     private DFAState startState;      // there should only be a single start state
-    private HashSet<String> language;
+    private LinkedHashSet<Character> symbols;
 
     public DFA() {
-        finalStates = new HashSet<DFAState>();
-        states = new HashSet<DFAState>();
-        language = new HashSet<String>();
+        finalStates = new LinkedHashSet<DFAState>();
+        states = new LinkedHashSet<DFAState>();
+        symbols = new LinkedHashSet<Character>();
         startState = null;
     }
 
@@ -24,10 +29,30 @@ public class DFA implements DFAInterface, FAInterface {
     @Override
     public boolean accepts(String s) {
 
-        // need current state pointer to walk through string
-        return false;
-    }
+        int spoint = 0; //index pointer on s
+        DFAState statePoint = startState;//current state pointer
+        int slength = s.length(); //length of s
 
+        while(slength != spoint){
+    //        System.out.println(s);
+		char symb = s.charAt(spoint); //get symbol at the s pointer
+            statePoint = statePoint.transition(symb);
+            if(statePoint == null){
+    //            System.out.println("Outputting false 1");
+		return false;
+            }
+            spoint++;
+        }
+//        statePoint = statePoint.transition((char) s.substring(spoint));
+        if (!statePoint.isFinalState()){
+//                System.out.println("Outputting false 2");
+		return false;
+        }else {
+  //          	System.out.println("Outputting true");
+		return true;
+        }
+    }
+//TODO: this thing
     @Override
     public State getToState(DFAState from, char onSymb) {
         return null;
@@ -35,20 +60,25 @@ public class DFA implements DFAInterface, FAInterface {
 
     @Override
     public void addStartState(String name) {
-        startState = new DFAStartState(name);
-        this.states.add(startState);
+        //System.out.println("New start state" + name);
+	    startState = new DFAState(name);
+        startState.setStartState(true);
+	this.states.add(startState);
     }
 
     @Override
     public void addState(String name) {
-        DFAState newState = new DFAState(name);
+//        System.out.println("New Regular state" + name);
+	    DFAState newState = new DFAState(name);
         this.states.add(newState);
     }
 
     @Override
     public void addFinalState(String name) {
-        DFAState newFinalState = new DFAFinalState(name);
-        this.states.add(newFinalState);
+//        System.out.println("New final state" + name);
+	    DFAState newFinalState = new DFAState(name);
+        newFinalState.setFinalState(true);
+	this.states.add(newFinalState);
         this.finalStates.add(newFinalState);
     }
 
@@ -56,11 +86,11 @@ public class DFA implements DFAInterface, FAInterface {
     public void addTransition(String fromState, char onSymb, String toState) {
         DFAState originState = this.getStateByName(fromState);
         DFAState destState = this.getStateByName(toState);
-        String symb = String.valueOf(onSymb);
-        originState.addTransition(symb, destState);
 
-        // update language if new Symb is seen, don't need to check if sym is in the language as HashSet only adds if it isn't in the set
-        language.add(symb);
+        originState.addTransition(onSymb, destState);
+
+        // update symbols if new Symb is seen, don't need to check if sym is in the language as HashSet only adds if it isn't in the set
+        symbols.add(onSymb);
 
     }
 
@@ -81,7 +111,7 @@ public class DFA implements DFAInterface, FAInterface {
 
     @Override
     public Set<Character> getABC() {
-        return null;
+        return symbols;
     }
 
     private DFAState getStateByName(String name) {
@@ -107,17 +137,52 @@ public class DFA implements DFAInterface, FAInterface {
         states.append(" ");
         Iterator<DFAState> stateIterator = this.states.iterator();
         while (stateIterator.hasNext()) {
-            states.append(stateIterator.next().getName() + " ");
+//        	System.out.println("States: " + states);
+	   	    states.append(stateIterator.next().getName() + " ");
         }
         dfaStr.append("Q = {" + states + "}");
 
-        // add languages
+        // add symbols
         StringBuilder lang = new StringBuilder();
-        Iterator<String> langIterator = this.language.iterator();
+        Iterator<Character> langIterator = this.symbols.iterator();
         while (langIterator.hasNext()) {
-            lang.append(langIterator.next().toString() + " ");
+//          System.out.println("Lang: " + lang.toString());
+		    lang.append(langIterator.next().toString() + " ");
         }
-        dfaStr.append("\nSigma = { " + lang + "}");
+        dfaStr.append("\nSigma = { " + lang + "}\n");
+
+        //transition table delta
+        langIterator = this.symbols.iterator();
+        stateIterator = this.states.iterator();
+        dfaStr.append("delta = \n");
+        dfaStr.append("\t\t");
+        while (langIterator.hasNext()) {
+            dfaStr.append(langIterator.next().toString() + "\t");
+        }
+        dfaStr.append("\n");
+        while(stateIterator.hasNext()) {
+            langIterator = this.symbols.iterator();
+            DFAState currState = stateIterator.next();
+            dfaStr.append("\t" + currState.getName() + "\t");
+            // transition on each symbol
+            while(langIterator.hasNext()) {
+                char symb = langIterator.next();
+                DFAState transState = currState.transition(symb);
+                dfaStr.append(transState.getName() + "\t");
+            }
+            dfaStr.append("\n");
+        }
+
+        // start state
+        dfaStr.append("q0 = " + startState.getName());
+
+        // final states
+        Iterator<DFAState> finalStatesIterator = this.finalStates.iterator();
+        dfaStr.append("\nF = { ");
+        while (finalStatesIterator.hasNext()) {
+             dfaStr.append(finalStatesIterator.next() + " ");
+        }
+        dfaStr.append("}");
 
 
         return dfaStr.toString();
